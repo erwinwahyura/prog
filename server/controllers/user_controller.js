@@ -1,9 +1,11 @@
 var User = require('../models/user_models');
-var bcrypt =  require ('bcrypt')
+var bcrypt =  require ('bcrypt');
 
 var signup = (req,res,next) =>{
+     console.log('Masuk pertama');
      User.findOne({email : req.body.email})
      .then ((docs)=>{
+          console.log('masuk then', docs);
           if(docs) {
                res.send('User name already exists')
           } else {
@@ -38,6 +40,8 @@ var signup = (req,res,next) =>{
      })
 }
 
+
+
 var signin =  (req,res,next)=> {
 User.findOne({email : req.body.email})
     .then((result)=>{
@@ -55,7 +59,6 @@ User.findOne({email : req.body.email})
     .catch(err=>{
           console.log(err);
     })
-
 }
 
 
@@ -115,7 +118,7 @@ var updateUser = (req, res,next)=>{
            fullname : req.body.fullname || docs.fullname,
            username : req.body.username || docs.username,
            email : req.body.email || docs.email,
-           password : req.body.password || docs.password,
+           password : req.body.password || docs.password
       }
    }, (err, result) => {
       if (err) res.send(err)
@@ -129,6 +132,7 @@ module.exports = {
      signup,
      signin,
      findAllUsers,
+     findOneUser,
      insertUser,
      updateUser,
      deleteUser
