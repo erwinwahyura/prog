@@ -25,7 +25,7 @@ var users = require('./routes/users');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : false}));
 
-app.use('/api/blog', artikel)
+app.use('/api/blog', blog)
 app.use('/api/users', users)
 
 
