@@ -39,6 +39,15 @@
 </template>
 
 <script>
+var config = {
+  apiKey: "AIzaSyBFeB00_BJThgniQHFGWEDb7iD8F0bhoK8",
+  authDomain: "kanban-project.firebaseapp.com",
+  databaseURL: "https://kanban-project.firebaseio.com/",
+  storageBucket: "gs://kanban-project.appspot.com",
+};
+firebase.initializeApp(config);
+var database = firebase.database()
+
 import Product from './Product'
 export default {
   components : {
@@ -97,18 +106,27 @@ export default {
   },
   created(){
     var self = this
-    axios.get('http://localhost:3000/api/blog',{
-      headers : {
-        token : localStorage.getItem('token')
-      }
-    })
-    .then(response=>{
-      self.list_products = response.data
-      console.log(response.data);
-    })
-    .catch(err=>{
-      console.log(err);
-    })
+
+    var ref = firebase.database().ref();
+    ref.on("value", function(snapshot) {
+       self.list_products = snapshot.val().product
+       console.log(self.list_products);
+    }, function (error) {
+       console.log("Error: " + error.code);
+    });
+
+    // axios.get('http://localhost:3000/api/blog',{
+    //   headers : {
+    //     token : localStorage.getItem('token')
+    //   }
+    // })
+    // .then(response=>{
+    //   self.list_products = response.data
+    //   console.log(response.data);
+    // })
+    // .catch(err=>{
+    //   console.log(err);
+    // })
   }
 }
 </script>
