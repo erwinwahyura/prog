@@ -1,10 +1,10 @@
 <template>
   <div id="app">
-    <Navbar></Navbar>
+    <Navbar :login="decodedToken" :key="decodedToken._id"></Navbar>
     <br>
     <br>
     <br>
-    
+
     <!-- <img src="./assets/bg.jpg"> -->
     <router-view></router-view>
   </div>
@@ -16,8 +16,29 @@ import Navbar from '@/components/Navbar'
 
 export default {
   name: 'app',
+  data(){
+    return{
+      decodedToken :[]
+    }
+  },
   components: {
     Navbar
+  },
+  created(){
+    var self = this
+    axios.get('http://localhost:3000/api/users/validate',{
+      headers:{
+        token : localStorage.getItem('token')
+      }
+    })
+    .then(response=>{
+      self.decodedToken = response.data
+      window.location.href = 'http://localhost:8080/#/home'
+      console.log(self.decodedToken);
+    })
+    .catch(err=>{
+      console.log(err);
+    })
   }
 }
 </script>
