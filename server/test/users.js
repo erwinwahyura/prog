@@ -38,8 +38,8 @@ describe('User', function(){
                })
                .end((err,res)=>{
                     res.should.have.status(200);
-                    res.body.should.be.a('object')
-                    res.body.name.should.be.equal('New User')
+                    res.body.should.be.a('object');
+                    res.body.msg.should.be.a('string')
                     done()
                })
           })
@@ -51,41 +51,37 @@ describe('User', function(){
                .get('/api/users')
                .end((err,res)=>{
                     res.should.have.status(200)
-                    res.body.should.be.a('array')
-                    res.body.length.should.equal(1)
+                    res.body.should.be.a('object')
                     done()
                })
           })
      })
 
-     // describe('PUT Users', function(){
-     //      it('should be update User by id', function(done){
-     //           var insertUser = new User({
-     //                "name": "Full name",
-     //                "email": "user@mail.com",
-     //                "password": "password",
-     //                "phone": "phone"
-     //           })
-     //           insertUser.save(function(err, res){
-     //                chai.request(server)
-     //                .put('/api/users' + res._id)
-     //                .send({
-     //                     "name": "Full name",
-     //                     "email": "user@mail.com",
-     //                     "password": "password",
-     //                     "phone": "phone"
-     //                })
-     //                .end(function(err,res){
-     //                     res.should.have.status(200)
-     //                     res.body.should.be.a('object')
-     //                     res.body.should.have.property('name')
-     //                     res.body.should.have.property('email')
-     //                     res.body.should.have.property('password')
-     //                     done()
-     //                })
-     //           })
-     //      })
-     // })
+     describe('PUT Users', function(){
+          it('should be update User by id', function(done){
+               var insertUser = new User({
+                    "name": "Update name",
+                    "email": "user@mail.com",
+                    "password": "password",
+                    "phone": "phone"
+               })
+               insertUser.save(function(err, res){
+                    chai.request(server)
+                    .put('/api/users/' + res._id)
+                    .send({
+                         "name": "Update name",
+                         "email": "user@mail.com",
+                         "password": "password",
+                         "phone": "phone"
+                    })
+                    .end(function(err,res){
+                         res.should.have.status(200);
+                         res.body.should.be.a('object')
+                         done()
+                    })
+               })
+          })
+     })
 
      describe("DELETE Users ",function(){
 		it('Should Delete Data User by id',function(done){
@@ -96,15 +92,10 @@ describe('User', function(){
 			})
 			insertUser.save(function(err, result){
 				chai.request(server)
-				.delete('/api/users'+ result._id)
+				.delete('/api/users/'+ result._id)
 				.end(function(err,res){
-					// res.should.have.status(200);
+                         res.should.have.status(200);
 					res.body.should.be.a('object');
-                         // res.body.length.should.equal(1)
-					// res.body.msg.should.be.a('string');
-					// res.body.result.should.be.a('object')
-					// res.body.result.ok.should.equal(1);
-					// res.body.result.n.should.equal(1);
 					done()
 				})
 			})

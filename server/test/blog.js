@@ -73,6 +73,7 @@ describe('Testing for CRUD Blog', function() {
 				chai.request(server)
 				.delete('/api/blog/'+ result._id)
 				.end((err,res)=>{
+                         res.should.have.status(200)
                          should.exist(res.body);
 					res.body.should.be.a('object');
 					res.body.msg.should.be.a('string');
@@ -101,9 +102,8 @@ describe('Testing for CRUD Blog', function() {
 		    	image : 'image New'
 				})
 				.end((err,res)=>{
-					console.log(res.body)
 					res.body.should.be.a('object');
-					// res.body.msg.should.be.a('string');
+
 					done()
 				})
 			})

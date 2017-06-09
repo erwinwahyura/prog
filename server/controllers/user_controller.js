@@ -90,7 +90,10 @@ var findAllUsers = (req,res,next)=>{
      console.log(req.body);
      User.find(function(err, result){
           if(result) {
-               res.send(result)
+               res.send({
+                    msg : "get all data ",
+                    result: result
+               })
           } else {
                res.send(err)
           }
@@ -118,7 +121,10 @@ var insertUser = (req,res,next)=>{
           if (err) {
                res.send(err.message)
           } else {
-               res.send(docs)
+               res.send({
+                    msg : "Data users",
+                    docs : docs
+               })
           }
      })
 }
@@ -126,10 +132,10 @@ var insertUser = (req,res,next)=>{
 var deleteUser = (req,res,next) =>{
      User.remove({_id:req.params.id}, (err,result)=>{
           if (err) {
-               console.log(err.message);
+               res.send(err);
           } else {
                res.send({
-                    msg : "Delete Data",
+                    msg : "Delete Data User",
                     result : result
                })
           }
@@ -143,14 +149,17 @@ var updateUser = (req, res,next)=>{
       _id: docs._id
    }, {
       $set: {
-           fullname : req.body.fullname || docs.fullname,
-           username : req.body.username || docs.username,
+           name : req.body.name || docs.name,
            email : req.body.email || docs.email,
-           password : req.body.password || docs.password
+           password : req.body.password || docs.password,
+           phone : req.body.phone || docs.phone
       }
    }, (err, result) => {
       if (err) res.send(err)
-      res.send(result)
+      res.send({
+           msg : 'update User',
+           result : result
+      })
    })
   })
 }
