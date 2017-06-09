@@ -1,5 +1,14 @@
 var Blog = require('../models/blog_models');
+var firebase = require('firebase')
+var config = {
+apiKey: "AIzaSyBFeB00_BJThgniQHFGWEDb7iD8F0bhoK8",
+authDomain: "kanban-project.firebaseapp.com",
+databaseURL: "https://kanban-project.firebaseio.com/",
+storageBucket: "gs://kanban-project.appspot.com",
+};
+firebase.initializeApp(config);
 
+var database = firebase.database();
 var insertBlog = (req,res,next)=>{
      var insert = new Blog ({
           title : req.body.title ,
@@ -14,7 +23,33 @@ var insertBlog = (req,res,next)=>{
           if (err) {
                res.send(err.message)
           } else {
-               res.send(docs)
+
+            function writeUserData(id,title, description, image, userId, createdAt, postdate, updateAt) {
+            firebase.database().ref('product/'+ id).set({
+
+            // id: id,
+              title: docs.title,
+              description: docs.description,
+              image: docs.image,
+              // userId: docs.userId,
+              createdAt: docs.createdAt,
+              postdate: docs.postdate,
+              updateAt: docs.updateAt
+
+            });
+            console.log('write data sukses');
+            }
+              // var data = docs._id
+              let str = '0123456789';
+              let length = 3;
+              let result = '';
+              for (let i = length; i > 0; i--) {
+                result += str[Math.floor(Math.random() * str.length)];
+              }
+              console.log('-------------1',result);
+              writeUserData(result, docs)
+              res.send(result,docs)
+
           }
      })
  }
