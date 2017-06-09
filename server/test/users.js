@@ -45,6 +45,25 @@ describe('User', function(){
           })
      })
 
+     describe('SIGNIN USER', function(){
+          it('should Data users', function(done){
+               chai.request(server)
+               .post('/api/users/signin/')
+               .send({
+                    name: "User",
+                    phone: "phone",
+                    password: "password",
+                    email: 'user@email.com'
+               })
+               .end((err,res)=>{
+                    res.should.have.status(200);
+                    res.body.should.be.a('object');
+                    res.body.msg.should.be.a('string')
+                    done()
+               })
+          })
+     })
+
      describe('GET Users', function(){
           it('get all data user', function(done){
                chai.request(server)

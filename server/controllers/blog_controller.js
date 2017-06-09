@@ -1,22 +1,50 @@
 var Blog = require('../models/blog_models');
 
 var insertBlog = (req,res,next)=>{
-     var insert = new Blog ({
+  console.log(req.decoded);
+  var time = req.body.postdate;
+  var day = time.substring(8, 10);
+  var month = time.substring(5, 7)-1;
+  var minute = time.substring(14, 16);
+  var hour = time.substring(11, 13);
+  console.log(day, month, minute, hour);
+		new CronJob(`0 ${minute} ${hour} ${day} ${month} *`, function() {
+			var job = queue.create('insertData', {
           title : req.body.title ,
           description : req.body.description,
           image: req.body.image,
-          userId : req.body.userId,
-          createdAt : new Date() ,
-          postdate : new Date(),
-          updateAt : new Date()
-     })
-     insert.save((err, docs) =>{
-          if (err) {
-               res.send(err.message)
-          } else {
-               res.send(docs)
-          }
-     })
+          userId : req.decoded.id,
+          postdate : req.body.postdate
+				})
+        .removeOnComplete( true )
+				.save(function(err){
+				   if( !err ) console.log("Cron job sukses", job.id );
+				});
+			queue.process('insertData', function(job, done){
+		  	insert(job.data, done);
+			});
+			function insert(job, done){
+         var insert = new Blog ({
+              title : job.title ,
+              description : job.description,
+              image: job.image,
+              userId : job.userId,
+              postdate : job.jobdate
+         })
+         insert.save((err, docs) =>{
+              if (err) {
+                   res.send(err.message)
+                   return done()
+              } else {
+                   res.send({
+                        docs : docs,
+                        msg : "data Blog"
+                   })
+                   return done()
+              }
+         })
+      }
+		}, null, true, 'Asia/Jakarta');
  }
 
 var findAllBlog = (req,res,next)=>{
