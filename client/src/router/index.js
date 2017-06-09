@@ -9,6 +9,7 @@ import Register from '@/components/Register'
 import Sidebar from '@/components/Sidebar'
 import Home from '@/components/Home'
 import Content from '@/components/Content'
+import Post from '@/components/Post'
 
 Vue.use(BootstrapVue);
 Vue.use(Router)
@@ -44,6 +45,11 @@ export default new Router({
       path: '/content',
       name: 'Content',
       component: Content
+    },
+    {
+      path: '/post',
+      name: 'Post',
+      component: Post
     }
   ]
 })
