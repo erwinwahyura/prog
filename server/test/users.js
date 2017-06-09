@@ -7,7 +7,6 @@ var User = require('../models/user_models')
 var should = chai.should()
 
 describe('User', function(){
-
      beforeEach(function(done){
           var insertUser = new User({
                name: "name",
@@ -19,17 +18,15 @@ describe('User', function(){
                done()
           })
      })
-
      afterEach(function(done){
           User.remove({}, (err, response)=>{
                done()
           })
      })
-
      describe('CREATE USER', function(){
           it('should Data users', function(done){
                chai.request(server)
-               .post('/api/users')
+               .post('/api/users/signup')
                .send({
                     name: "New User",
                     phone: "phone1",
@@ -38,8 +35,27 @@ describe('User', function(){
                })
                .end((err,res)=>{
                     res.should.have.status(200);
-                    res.body.should.be.a('object')
-                    res.body.name.should.be.equal('New User')
+                    res.body.should.be.a('object');
+                    res.body.msg.should.be.a('string')
+                    done()
+               })
+          })
+     })
+
+     describe('SIGNIN USER', function(){
+          it('should Data users', function(done){
+               chai.request(server)
+               .post('/api/users/signin/')
+               .send({
+                    name: "User",
+                    phone: "phone",
+                    password: "password",
+                    email: 'user@email.com'
+               })
+               .end((err,res)=>{
+                    res.should.have.status(200);
+                    res.body.should.be.a('object');
+                    res.body.msg.should.be.a('string')
                     done()
                })
           })
@@ -52,7 +68,6 @@ describe('User', function(){
                .end((err,res)=>{
                     res.should.have.status(200)
                     res.body.should.be.a('array')
-                    res.body.length.should.equal(1)
                     done()
                })
           })
@@ -61,26 +76,23 @@ describe('User', function(){
      describe('PUT Users', function(){
           it('should be update User by id', function(done){
                var insertUser = new User({
-                    "name": "Full name",
+                    "name": "Update name",
                     "email": "user@mail.com",
                     "password": "password",
                     "phone": "phone"
                })
                insertUser.save(function(err, res){
                     chai.request(server)
-                    .put('/api/users' + res._id)
+                    .put('/api/users/' + res._id)
                     .send({
-                         "name": "Full name",
+                         "name": "Update name",
                          "email": "user@mail.com",
                          "password": "password",
                          "phone": "phone"
                     })
                     .end(function(err,res){
-                         res.should.have.status(200)
+                         res.should.have.status(200);
                          res.body.should.be.a('object')
-                         res.body.should.have.property('name')
-                         res.body.should.have.property('email')
-                         res.body.should.have.property('password')
                          done()
                     })
                })
@@ -96,15 +108,10 @@ describe('User', function(){
 			})
 			insertUser.save(function(err, result){
 				chai.request(server)
-				.delete('/api/users'+ result._id)
+				.delete('/api/users/'+ result._id)
 				.end(function(err,res){
-					// res.should.have.status(200);
+                         res.should.have.status(200);
 					res.body.should.be.a('object');
-                         // res.body.length.should.equal(1)
-					// res.body.msg.should.be.a('string');
-					// res.body.result.should.be.a('object')
-					// res.body.result.ok.should.equal(1);
-					// res.body.result.n.should.equal(1);
 					done()
 				})
 			})

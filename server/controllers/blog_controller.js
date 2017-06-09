@@ -13,7 +13,6 @@ var config = {
 firebase.initializeApp(config);
 
 var database = firebase.database();
-
 var insertBlog = (req,res,next)=>{
   console.log(req.decoded);
   var time = req.body.postdate;
