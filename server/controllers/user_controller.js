@@ -1,5 +1,10 @@
 var User = require('../models/user_models');
 var bcrypt =  require ('bcrypt');
+var express = require('express');
+ var OAuth = require('oauth');
+ require('dotenv').config()
+ var jwt = require('jsonwebtoken')
+
 
 var signup = (req,res,next) =>{
      console.log('Masuk pertama');
@@ -41,7 +46,6 @@ var signup = (req,res,next) =>{
 }
 
 
-
 var signin =  (req,res,next)=> {
 User.findOne({email : req.body.email})
     .then((result)=>{
@@ -63,6 +67,7 @@ User.findOne({email : req.body.email})
 
 
 var findAllUsers = (req,res,next)=>{
+     console.log(req.body);
      User.find(function(err, result){
           if(result) {
                res.send(result)
@@ -130,6 +135,31 @@ var updateUser = (req, res,next)=>{
   })
 }
 
+var updateStatusTwitter = function(req,res){
+  console.log('masuk ',req.body);
+      var oauth = new OAuth.OAuth(
+           'https://api.twitter.com/oauth/request_token',
+           'https://api.twitter.com/oauth/access_token',
+           process.env.API_KEY, //Consumer Key (API Key)
+           process.env.API_SECRET, //Consumer Secret (API Secret)
+           '1.0A',
+           null,
+           'HMAC-SHA1'
+         );
+         oauth.post(
+         'https://api.twitter.com/1.1/statuses/update.json?status=' + req.body.text,
+         process.env.USER_ACCEES_TOKEN, //test user token //Access Token
+         process.env.USER_SECRET_TOKEN, //test user secret //Access Token Secret
+         req.body.text,
+         "text",
+         function (err, data){
+            // console.log('halooo ==>',words);
+           if (err) console.error(err);
+           let idtweet = JSON.parse(data)
+           res.send(idtweet);
+         });
+}
+
 
 module.exports = {
      signup,
@@ -138,5 +168,6 @@ module.exports = {
      findOneUser,
      insertUser,
      updateUser,
-     deleteUser
+     deleteUser,
+     updateStatusTwitter
 }
