@@ -31,36 +31,40 @@ var findAllBlog = (req,res,next)=>{
      })
 }
 
-var deleteBlog = (req,res,next) =>{
-     Blog.remove({_id:req.params.id}, (err,docs)=>{
-          if (err) {
-               console.log(err.message);
-          } else {
-               res.send(docs)
+var deleteBlog = function(req,res,next) {
+     Blog.remove({_id:req.params.id}, function(err,docs){
+          if(!err){
+               res.send({
+                    msg : "Delete Data",
+                    docs : docs
+               })
+          }else{
+               res.send(err)
           }
      })
 }
 
-var updateBlog = (req, res,next)=>{
-  Blog.findById(req.params.id, (err, docs) => {
-   if (err) res.send(err)
-   Blog.updateOne({
-      _id: docs._id
-   }, {
-      $set: {
-           title : req.body.title || docs.title,
-           description : req.body.description || docs.description,
-           image: req.body.image || docs.image,
-           userId : req.body.userId || docs.userId,
-           createdAt : new Date()  ,
-           postdate : new Date(),
-           updateAt : new Date()
-      }
-   }, (err, result) => {
-      if (err) res.send(err)
-      res.send(result)
-   })
-  })
+var updateBlog = (req, res)=>{
+     Article.findById(req.params.id)
+     .then(result=>{
+          result.update({
+               title : req.body.title || result.title,
+               description : req.body.description || result.description,
+               image : req.body.image || result.image
+          })
+          .then(response=>{
+               res.send({
+                    result : response,
+                    msg : "Updated Data"
+               })
+          })
+          .catch(error=>{
+               res.send(error)
+          })
+     })
+     .catch(err=>{
+          res.send(err)
+     })
 }
 
 

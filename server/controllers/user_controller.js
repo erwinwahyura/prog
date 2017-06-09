@@ -67,7 +67,7 @@ var findAllUsers = (req,res,next)=>{
           if(result) {
                res.send(result)
           } else {
-               res.send(err.message)
+               res.send(err)
           }
      })
 }
@@ -84,10 +84,10 @@ var findOneUser = (req,res,next)=>{
 
 var insertUser = (req,res,next)=>{
      var insert = new User ({
-          fullname : req.body.fullname,
-          username : req.body.username,
-          email : req.body.email,
+          name : req.body.name,
+          phone : req.body.phone,
           password : bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10)),
+          email : req.body.email
      })
      insert.save((err, docs) =>{
           if (err) {
@@ -99,11 +99,14 @@ var insertUser = (req,res,next)=>{
 }
 
 var deleteUser = (req,res,next) =>{
-     User.remove({_id:req.params.id}, (err,docs)=>{
+     User.remove({_id:req.params.id}, (err,result)=>{
           if (err) {
                console.log(err.message);
           } else {
-               res.send(docs)
+               res.send({
+                    msg : "Delete Data",
+                    result : result
+               })
           }
      })
 }
