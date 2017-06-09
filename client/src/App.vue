@@ -4,8 +4,6 @@
     <br>
     <br>
     <br>
-
-    <!-- <img src="./assets/bg.jpg"> -->
     <router-view></router-view>
   </div>
 </template>

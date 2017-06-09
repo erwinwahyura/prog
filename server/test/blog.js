@@ -15,7 +15,8 @@ describe('Testing for CRUD Blog', function() {
     var insertBlog = new Blog({
     	title : 'Title',
     	description : 'description',
-    	image : 'image'
+    	image : 'image',
+      postdate : '2017-06-06T00:12'
     })
     insertBlog.save((err, response)=>{
 			done()
@@ -35,9 +36,10 @@ describe('Testing for CRUD Blog', function() {
     	chai.request(server)
 		  .post('/api/blog')
 		  .send({
-               title : 'Title',
-          	description : 'description',
-          	image : 'image',
+        title : 'Title',
+      	description : 'description',
+      	image : 'image',
+        postdate : '2017-06-06T00:12'
 		  })
 		  .end((err, res)=>{
 		  	res.should.have.status(200);
@@ -109,6 +111,6 @@ describe('Testing for CRUD Blog', function() {
 			})
 		})
 	})
-
+  
 
 });

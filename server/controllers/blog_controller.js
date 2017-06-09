@@ -1,27 +1,56 @@
 var Blog = require('../models/blog_models');
+const CronJob = require('cron').CronJob
+const kue = require('kue')
+const queue = kue.createQueue()
+
 
 var insertBlog = (req,res,next)=>{
-     var insert = new Blog ({
+  console.log(req.decoded);
+  var time = req.body.postdate;
+  var day = time.substring(8, 10);
+  var month = time.substring(5, 7)-1;
+  var minute = time.substring(14, 16);
+  var hour = time.substring(11, 13);
+  console.log(day, month, minute, hour);
+		new CronJob(`0 ${minute} ${hour} ${day} ${month} *`, function() {
+			var job = queue.create('insertData', {
           title : req.body.title ,
           description : req.body.description,
           image: req.body.image,
-          userId : req.body.userId,
-          createdAt : new Date() ,
-          postdate : new Date(),
-          updateAt : new Date()
-     })
-     insert.save((err, docs) =>{
-          if (err) {
-               res.send(err.message)
-          } else {
-               res.send(docs)
-          }
-     })
+          userId : req.decoded.id,
+          postdate : req.body.postdate
+				})
+        .removeOnComplete( true )
+				.save(function(err){
+				   if( !err ) console.log("Cron job sukses", job.id );
+				});
+			queue.process('insertData', function(job, done){
+		  	insert(job.data, done);
+			});
+			function insert(job, done){
+         var insert = new Blog ({
+              title : job.title ,
+              description : job.description,
+              image: job.image,
+              userId : job.userId,
+              postdate : job.date
+         })
+         insert.save((err, docs) =>{
+              if (err) {
+                   res.send(err.message)
+                   return done()
+              } else {
+                   res.send(docs)
+                   return done()
+              }
+         })
+      }
+		}, null, true, 'Asia/Jakarta');
  }
 
 var findAllBlog = (req,res,next)=>{
      Blog.find({})
-     .populate('User')
+     .populate('userId')
      .exec((err, docs)=>{
           if(err) {
                res.send(err.message)
@@ -66,8 +95,6 @@ var updateBlog = (req, res)=>{
           res.send(err)
      })
 }
-
-
 
 module.exports = {
      insertBlog,

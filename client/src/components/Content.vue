@@ -1,27 +1,115 @@
 <template lang="html">
   <div id="app">
-    <h1>CONTENT</h1>
-    <div class="container">
+    <div class="container" v-if="product == true">
+      <p><a class="btn btn-primary" role="button" style="color:white;" @click="showPost">Post Your Product</a>
+      <h3>List Product</h3>
       <div class="row">
-        <div class="col-md-12">
-          <div class="thumbnail">
-            <img src="../assets/logo.png" alt="keren">
-            <div class="caption">
-              <h3>Thumbnail label</h3>
-              <p>ini adalah barang yang kamu promosikan!!</p>
-              <p><a href="#" class="btn btn-primary" role="button">Comment</a> <a href="#" class="btn btn-primary" role="button">Like</a></p>
-            </div>
-          </div>
+        <product v-for="product in list_products" v-bind:content="product" :key="product._id"></product>
+      </div>
+
+    </div>
+    <div class="container" v-if="post == true">
+      <p><a class="btn btn-primary" role="button" style="color:white;" @click="showListProduct">Back</a>
+      <h1>Post New Product</h1>
+      <br>
+      <div class="row">
+        <div class="col-md-2">
+          <alert v-if="msg.length>0">
+            <span class="icon-ok-circled alert-icon-float-left"></span>
+            <strong>Well Done!</strong>
+            <p>{{msg}}</p>
+            <button @click="msgClear">X</button>
+          </alert>
+        </div>
+        <div class="col-md-8">
+          <b-form-input v-model="title" type="text" placeholder="title.." required></b-form-input>
+          <br>
+          <b-form-input style="height:100px;" textarea v-model="description" placeholder="your description.." required></b-form-input>
+          <br>
+          <b-form-input v-model="image" type="text" placeholder="url image" required></b-form-input>
+          <br>
+          <b-form-input v-model="post_date" type="datetime-local" placeholder="url image" required></b-form-input>
+          <br>
+          <b-button class="col-md-12" @click="postYourProduct">Post Your Product</b-button>
         </div>
       </div>
     </div>
-
   </div>
 
 </template>
 
 <script>
+import Product from './Product'
 export default {
+  components : {
+    Product
+  },
+  data(){
+    return{
+      product : true,
+      post : false,
+      title : '',
+      description : '',
+      image: '',
+      post_date:'',
+      list_products:[],
+      msg : ''
+    }
+  },
+  methods : {
+    msgClear(){
+      this.msg = ''
+    },
+    showPost(){
+      this.post = true;
+      this.product = false;
+    },
+    showListProduct(){
+      this.post = false;
+      this.product = true;
+    },
+    postYourProduct(){
+      var self = this
+      this.msg = 'Product berhasil di upload... Silahkan tunggu untuk proses lain lain'
+      axios.post('http://localhost:3000/api/blog',{
+        title: self.title,
+        description : self.description,
+        image : self.image,
+        postdate : self.post_date
+      },{
+        headers : {
+          token : localStorage.getItem('token')
+        }
+      })
+      .then(response=>{
+        self.title = ''
+        self.description = ''
+        self.image= ''
+        self.post_date=''
+        self.msg = ''
+        self.list_products.push(response.data)
+        console.log(response.data);
+      })
+      .catch(err=>{
+        console.log(err);
+      })
+    }
+  },
+  created(){
+    var self = this
+    axios.get('http://localhost:3000/api/blog',{
+      headers : {
+        token : localStorage.getItem('token')
+      }
+    })
+    .then(response=>{
+      self.list_products = response.data
+      console.log(response.data);
+    })
+    .catch(err=>{
+      console.log(err);
+    })
+  }
 }
 </script>
 

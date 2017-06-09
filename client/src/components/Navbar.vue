@@ -6,6 +6,16 @@
         <span>PROG-APPS</span>
       </b-link>
       <b-collapse is-nav id="nav_collapse" v-if="login.id">
+        <b-nav is-nav-bar >
+          <b-nav-item-dropdown right>
+            <template slot="text">
+              <a style="font-weight: bold;">HOME</a>
+            </template>
+            <b-dropdown-item  to="/content">List Product</b-dropdown-item>
+          </b-nav-item-dropdown>
+        </b-nav>
+      </b-collapse>
+      <b-collapse is-nav id="nav_collapse" v-if="login.id">
         <b-nav is-nav-bar class="ml-auto">
           <b-nav-item-dropdown right>
             <template slot="text">
@@ -44,9 +54,8 @@ export default {
   methods : {
     logout(){
       localStorage.clear()
-      window.location.href = "http://localhost:8080/#/"
+      window.location.href = "./"
       location.reload()
-      
     }
   }
 }

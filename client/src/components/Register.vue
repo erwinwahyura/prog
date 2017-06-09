@@ -5,24 +5,27 @@
       <br>
       <div class="row">
         <div class="col-md-4">
+          <div v-if="msg.length>0">
+            {{msg}}
+          </div>
         </div>
         <div class="col-md-4">
-          <b-form-input v-model="name" type="text" placeholder="Enter your name" :state="text.length?'success':'warning'" :formatter="format"></b-form-input>
+          <b-form-input v-model="name" type="text" placeholder="Enter your name"></b-form-input>
           <br>
-          <b-form-input v-model="email" type="text" placeholder="Enter your email" :state="text.length?'success':'warning'" :formatter="format" lazy-formatter></b-form-input>
+          <b-form-input v-model="email" type="text" placeholder="Enter your email"></b-form-input>
           <small class="text-muted"></small>
           <br>
-          <b-form-input v-model="password" type="password" placeholder="Enter your password" :state="text.length?'success':'warning'" :formatter="format"></b-form-input>
+          <b-form-input v-model="password" type="password" placeholder="Enter your password"></b-form-input>
           <small class="text-muted"></small>
           <br>
-          <b-form-input v-model="phone" type="phone" placeholder="Enter your phone number" :state="text.length?'success':'warning'" :formatter="format"></b-form-input>
+          <b-form-input v-model="phone" type="phone" placeholder="Enter your phone number"></b-form-input>
           <small class="text-muted"></small>
           <br>
           <div class="row">
             <template v-for="variant in ['success']">
               <div class="col-md-12">
-                <b-button :size="size" :variant="variant" href="">
-                  SIGN UP {{password}}
+                <b-button @click="signup">
+                  SIGN UP
                 </b-button>
               </div>
             </template>
@@ -41,7 +44,8 @@ export default {
       name : '',
       email : '',
       password : '',
-      phone : ''
+      phone : '',
+      msg : ''
     }
   },
   methods : {
@@ -62,7 +66,7 @@ export default {
         }else if(response.data.hasOwnProperty('message')){
           this.msg = response.data.message
         }else{
-          // console.log(response.data.token);
+          console.log(response.data);
         }
       })
       .catch(err=>{

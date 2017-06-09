@@ -7,11 +7,11 @@ router.post('/signin', User.signin)
 router.get('/validate', User.validate)
 
 
-// router.post('/', User.insertUser)
+router.post('/', User.insertUser)
 router.get('/', User.findAllUsers);
 router.get('/:id', User.findOneUser);
-// router.put('/:id', User.updateUser);
-// router.delete('/:id', User.deleteUser);
+router.put('/:id', User.updateUser);
+router.delete('/:id', User.deleteUser);
 
 
 // router.post('/', (req,res,next)=>{

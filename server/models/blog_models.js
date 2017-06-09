@@ -6,14 +6,12 @@ var artikelSchema = new Schema({
   title:  String,
   description: String,
   image : String,
-  userId :  [{
+  userId :  {
        type : Schema.Types.ObjectId,
        ref : 'User'
-  }],
-  createdAt:   Date,
-  postdate: Date,
-  updateAt: Date
-});
+  },
+  postdate: String
+}, {timestamps:true});
 
 var Blog = mongoose.model('Blog', artikelSchema);
 
