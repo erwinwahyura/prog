@@ -91,17 +91,16 @@ export default {
         }
       })
       .then(response=>{
-        self.title = ''
-        self.description = ''
-        self.image= ''
-        self.post_date=''
-        self.msg = ''
-        self.list_products.push(response.data)
-        console.log(response.data);
+        console.log(response);
       })
       .catch(err=>{
         console.log(err);
       })
+      this.title = ''
+      this.description = ''
+      this.image= ''
+      this.post_date=''
+      this.msg = ''
     }
   },
   created(){
